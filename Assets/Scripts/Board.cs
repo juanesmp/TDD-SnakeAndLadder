@@ -3,19 +3,33 @@ using System.Collections;
 
 public class Board
 {
-	public int Position
+	private Dice dice;
+	private Token token;
+
+	public int LastRollResult
 	{
 		get;
 		private set;
 	}
 
-	public Board()
+	public IToken Token
 	{
-		Position = 1;
+		get { return token; }
 	}
 
-	public void Move(int spaces)
+	public Board(Dice dice)
 	{
-		Position = 4;
+		this.dice = dice;
+		token = new Token();
+	}
+
+	public void RollDice()
+	{
+		LastRollResult = dice.Roll();
+	}
+
+	public void MoveToken()
+	{
+		token.Move (LastRollResult);
 	}
 }
