@@ -10,13 +10,14 @@ public class BoardTest
 	private Board board;
 	private Dice dice;
 	private List<Teleporter> ladders;
+	private const int FINAL_POSITION = 100;
 
 	[SetUp]
 	public void Setup()
 	{
 		dice = Substitute.For<Dice> ();
 		ladders = new List<Teleporter>() { new Teleporter(2, 12), new Teleporter(8, 3) };
-		board = new Board(dice, ladders);
+		board = new Board(dice, ladders, FINAL_POSITION);
 	}
 
 	[Test]
@@ -28,48 +29,56 @@ public class BoardTest
 	[Test]
 	public void PositionIsFiveAfterMovingThreeSpaces()
 	{
-		MoveSpaces(3);
-		Assert.AreEqual(4, board.Token.Position);
+		CheckPositionAfterMovingSpaces(4, 3);
 	}
 
 	[Test]
 	public void PositionisTenAfterMovingFourTheFiveSpaces()
 	{
-		MoveSpaces(4);
-		MoveSpaces(5);
-
-		Assert.AreEqual(10, board.Token.Position);
+		CheckPositionAfterMovingSpaces(10, 4, 5);
 	}
 
-	[Test]
+	[Test, Repeat(100)]
 	public void DiceRollIsBetweenOneAndSix()
 	{
-		board = new Board(new Dice(), ladders);
-		for (int i=0; i<100; i++)
-		{
-			board.RollDice();
-			Assert.That(board.LastRollResult, Is.InRange (1, 6));
-		}
+		board = new Board(new Dice(), ladders, FINAL_POSITION);
+		board.RollDice();
+		Assert.That(board.LastRollResult, Is.InRange (1, 6));
 	}
 
 	[Test]
 	public void PositionChangeToTheEndOfLadder()
 	{
-		MoveSpaces(1);
-		Assert.AreEqual(12, board.Token.Position);
+		CheckPositionAfterMovingSpaces(12, 1);
 	}
 
 	[Test]
 	public void PositionChangeToTheBegginingOfSnake()
 	{
-		MoveSpaces(2);
-		MoveSpaces(5);
-		Assert.AreEqual(3, board.Token.Position);
+		CheckPositionAfterMovingSpaces(3, 2, 5);
 	}
-	
+
+	[Test]
+	public void IfLastMoveEqualsToFinalPositionPlayerwins()
+	{
+		while(board.Token.Position < FINAL_POSITION - 3)
+			MoveSpaces(1);
+
+		MoveSpaces(3);
+
+		Assert.AreEqual(board.Token, board.WinnerToken);
+	}
+
+	private void CheckPositionAfterMovingSpaces(int expectedPosition, params int[] spaces)
+	{
+		foreach (int space in spaces)
+			MoveSpaces(space);
+		Assert.AreEqual(expectedPosition, board.Token.Position);
+	}
+
 	private void MoveSpaces(int spaces)
 	{
-		dice.Roll ().Returns (spaces);
+		dice.LastRollResult.Returns (spaces);
 		board.RollDice ();
 		board.MoveToken ();
 	}

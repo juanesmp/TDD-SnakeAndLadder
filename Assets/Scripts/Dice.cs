@@ -3,8 +3,14 @@ using System.Collections;
 
 public class Dice
 {
-	public virtual int Roll ()
+	public virtual int LastRollResult
 	{
-		return Random.Range (1, 7);
+		get;
+		private set;
+	}
+
+	public void Roll ()
+	{
+		LastRollResult = Random.Range (1, 7);
 	}
 }

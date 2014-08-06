@@ -8,7 +8,14 @@ public class Board
 	private Token token;
 	private List<Teleporter> ladders;
 
+	private int finalPosition;
+
 	public int LastRollResult
+	{
+		get{ return dice.LastRollResult; }
+	}
+
+	public IToken WinnerToken 
 	{
 		get;
 		private set;
@@ -19,16 +26,17 @@ public class Board
 		get { return token; }
 	}
 
-	public Board(Dice dice, List<Teleporter> ladders)
+	public Board(Dice dice, List<Teleporter> ladders, int finalPosition)
 	{
 		this.dice = dice;
 		this.ladders = ladders;
+		this.finalPosition = finalPosition;
 		token = new Token();
 	}
 
 	public void RollDice()
 	{
-		LastRollResult = dice.Roll();
+		dice.Roll();
 	}
 
 	public void MoveToken()
@@ -37,5 +45,7 @@ public class Board
 		Teleporter ladder = ladders.Find (l => l.initialPosition == token.Position);
 		if (ladder != null)
 			token.Move (ladder.finalPosition - ladder.initialPosition);
+		if (token.Position == finalPosition)
+			WinnerToken = token;
 	}
 }
