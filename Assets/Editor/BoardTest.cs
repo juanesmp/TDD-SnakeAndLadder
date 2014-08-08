@@ -59,14 +59,19 @@ public class BoardTest
 	}
 
 	[Test]
-	public void IfLastMoveEqualsToFinalPositionPlayerwins()
+	public void IfLastMoveEqualsToFinalPositionPlayerWins()
 	{
-		while(board.Token.Position < FINAL_POSITION - 3)
-			MoveSpaces(1);
-
+		MoveToPosition (FINAL_POSITION - 3);
 		MoveSpaces(3);
-
 		Assert.AreEqual(board.Token, board.WinnerToken);
+	}
+
+	[Test]
+	public void IfLastMoveExceedsFinalPositionTokenStaysInCurrentPosition()
+	{
+		MoveToPosition (FINAL_POSITION - 3);
+		MoveSpaces(4);
+		Assert.AreEqual(FINAL_POSITION - 3, board.Token.Position);
 	}
 
 	private void CheckPositionAfterMovingSpaces(int expectedPosition, params int[] spaces)
@@ -81,5 +86,11 @@ public class BoardTest
 		dice.LastRollResult.Returns (spaces);
 		board.RollDice ();
 		board.MoveToken ();
+	}
+
+	private void MoveToPosition (int position)
+	{
+		while (board.Token.Position < position)
+			MoveSpaces (1);
 	}
 }

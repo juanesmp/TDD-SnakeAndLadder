@@ -41,10 +41,22 @@ public class Board
 
 	public void MoveToken()
 	{
-		token.Move (LastRollResult);
-		Teleporter ladder = ladders.Find (l => l.initialPosition == token.Position);
-		if (ladder != null)
-			token.Move (ladder.finalPosition - ladder.initialPosition);
+		if (token.Position + LastRollResult <= finalPosition)
+			token.Move (LastRollResult);
+
+		ApplyTeleporter();
+		CheckWinCondition ();
+	}
+
+	private void ApplyTeleporter()
+	{
+		Teleporter teleporter = ladders.Find (l => l.initialPosition == token.Position);
+		if (teleporter != null)
+			token.Move (teleporter.finalPosition - teleporter.initialPosition);
+	}
+
+	private void CheckWinCondition ()
+	{
 		if (token.Position == finalPosition)
 			WinnerToken = token;
 	}
