@@ -15,6 +15,12 @@ public class Board
 		get{ return dice.LastRollResult; }
 	}
 
+	public Teleporter LastTeleporter
+	{
+		get;
+		private set;
+	}
+
 	public IToken WinnerToken 
 	{
 		get;
@@ -52,7 +58,10 @@ public class Board
 	{
 		Teleporter teleporter = ladders.Find (l => l.initialPosition == token.Position);
 		if (teleporter != null)
+		{
 			token.Move (teleporter.finalPosition - teleporter.initialPosition);
+			LastTeleporter = teleporter;
+		}
 	}
 
 	private void CheckWinCondition ()

@@ -59,6 +59,13 @@ public class BoardTest
 	}
 
 	[Test]
+	public void LastTeleporterIsValid()
+	{
+		MoveToPosition(2);
+		Assert.AreEqual(12, board.LastTeleporter.finalPosition);
+	}
+
+	[Test]
 	public void IfLastMoveEqualsToFinalPositionPlayerWins()
 	{
 		MoveToPosition (FINAL_POSITION - 3);
